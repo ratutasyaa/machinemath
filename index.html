@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Function Machine</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --purple: #8064d8;
+    --dark-purple: #5942a5;
+    --light-purple: #f0ebff;
+    --pink: #f8dce9;
+    --mint: #d9f4e9;
+    --yellow: #fff0bd;
+    --text: #38334b;
+    --muted: #89849b;
+    --white: #ffffff;
+    --border: #e9e4f4;
+    --green: #35a77c;
+    --red: #e56c7d;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background: #f8f6ff;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 25px 16px;
+}
+
+button, input {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+}
+
+.container {
+    max-width: 1050px;
+    margin: auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--dark-purple);
+    letter-spacing: 1px;
+}
+
+.logo span {
+    color: #e58eae;
+}
+
+.tagline {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
+
+.panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 8px 30px rgba(89,66,165,0.06);
+}
+
+.start-panel {
+    text-align: center;
+    padding: 55px 25px;
+    background:
+        radial-gradient(circle at 10% 10%, #f8dce9 0, transparent 25%),
+        radial-gradient(circle at 90% 90%, #d9f4e9 0, transparent 25%),
+        white;
+}
+
+.machine-icon {
+    font-size: 75px;
+    margin-bottom: 15px;
+    animation: float 2.5s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+h1 {
+    font-size: clamp(32px, 6vw, 48px);
+    color: var(--dark-purple);
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.subtitle {
+    color: var(--muted);
+    margin: 13px auto 25px;
+    max-width: 550px;
+    line-height: 1.7;
+}
+
+.primary-btn {
+    background: var(--purple);
+    color: white;
+    padding: 13px 30px;
+    border-radius: 14px;
+    font-weight: 900;
+    font-size: 15px;
+    box-shadow: 0 5px 0 var(--dark-purple);
+    transition: 0.2s;
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+}
+
+.primary-btn:active {
+    transform: translateY(2px);
+    box-shadow: none;
+}
+
+.secondary-btn {
+    background: var(--light-purple);
+    color: var(--dark-purple);
+    padding: 11px 20px;
+    border-radius: 12px;
+    font-weight: 800;
+}
+
+.feature-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.feature {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 8px 15px;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--dark-purple);
+}
+
+/* GAME HEADER */
+
+.game-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.level-label {
+    color: var(--purple);
+    font-size: 13px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stats {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.stat {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 8px 13px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.progress-track {
+    height: 9px;
+    background: #e9e4f4;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #8064d8, #e58eae);
+    border-radius: 20px;
+    transition: width 0.4s;
+}
+
+.level-title {
+    font-size: 25px;
+    font-weight: 900;
+    color: var(--dark-purple);
+}
+
+.topic {
+    display: inline-block;
+    background: var(--light-purple);
+    color: var(--dark-purple);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 900;
+    margin: 9px 0 14px;
+}
+
+.description {
+    color: #69647b;
+    line-height: 1.7;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* EXAMPLE TABLE */
+
+.example-box {
+    background: #faf9ff;
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    padding: 17px;
+    margin-bottom: 22px;
+}
+
+.section-title {
+    font-size: 13px;
+    font-weight: 900;
+    margin-bottom: 12px;
+    color: var(--dark-purple);
+}
+
+.example-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.example-table th {
+    background: var(--light-purple);
+    color: var(--dark-purple);
+    padding: 10px;
+    font-size: 13px;
+}
+
+.example-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 800;
+    font-size: 14px;
+}
+
+.example-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* ANSWER OPTIONS */
+
+.options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.option {
+    background: white;
+    border: 2px solid var(--border);
+    padding: 15px;
+    border-radius: 14px;
+    text-align: left;
+    font-weight: 800;
+    color: var(--text);
+    transition: 0.2s;
+    min-height: 58px;
+}
+
+.option:hover {
+    border-color: var(--purple);
+    background: #faf8ff;
+}
+
+.option.selected {
+    border-color: var(--purple);
+    background: var(--light-purple);
+    color: var(--dark-purple);
+}
+
+.option:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.option-letter {
+    display: inline-flex;
+    width: 27px;
+    height: 27px;
+    align-items: center;
+    justify-content: center;
+    background: var(--light-purple);
+    color: var(--dark-purple);
+    border-radius: 8px;
+    margin-right: 8px;
+    font-size: 12px;
+}
+
+/* FUNCTION MACHINE */
+
+.machine-area {
+    background: linear-gradient(135deg, #f3efff, #fff3f8);
+    border: 1px solid #e7ddff;
+    border-radius: 20px;
+    padding: 22px 15px;
+    margin: 20px 0;
+}
+
+.machine-heading {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--dark-purple);
+    margin-bottom: 20px;
+}
+
+.machine-flow {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr 1fr;
+    gap: 12px;
+    align-items: center;
+    max-width: 650px;
+    margin: auto;
+}
+
+.machine-node {
+    text-align: center;
+}
+
+.node-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 900;
+    margin-bottom: 8px;
+}
+
+.node-box {
+    background: white;
+    border: 2px solid #e4dafa;
+    border-radius: 15px;
+    min-height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    font-weight: 900;
+    color: var(--dark-purple);
+    padding: 10px;
+}
+
+.machine-body {
+    background: var(--purple);
+    color: white;
+    border-radius: 18px;
+    padding: 17px 8px;
+    min-height: 95px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 0 var(--dark-purple);
+}
+
+.machine-body .gear {
+    font-size: 30px;
+    margin-bottom: 4px;
+}
+
+.machine-body strong {
+    font-size: 13px;
+}
+
+.machine-body small {
+    font-size: 10px;
+    opacity: 0.8;
+}
+
+.arrow {
+    font-size: 23px;
+    color: var(--purple);
+    text-align: center;
+    font-weight: 900;
+}
+
+.machine-flow .middle {
+    position: relative;
+}
+
+.machine-body.running .gear {
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.input-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.input-area label {
+    font-weight: 900;
+    color: var(--dark-purple);
+}
+
+.input-area input {
+    width: 100px;
+    padding: 11px;
+    border: 2px solid #dfd5f4;
+    border-radius: 11px;
+    outline: none;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--dark-purple);
+}
+
+.input-area input:focus {
+    border-color: var(--purple);
+}
+
+.run-btn {
+    background: var(--dark-purple);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 11px;
+    font-weight: 900;
+}
+
+.action-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.hint-btn {
+    background: var(--yellow);
+    color: #8a6718;
+    padding: 11px 18px;
+    border-radius: 11px;
+    font-weight: 900;
+}
+
+.check-btn {
+    background: var(--green);
+    color: white;
+    padding: 11px 22px;
+    border-radius: 11px;
+    font-weight: 900;
+}
+
+.check-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.feedback {
+    display: none;
+    margin-top: 18px;
+    padding: 17px;
+    border-radius: 15px;
+    line-height: 1.7;
+    font-size: 14px;
+}
+
+.feedback.show {
+    display: block;
+}
+
+.feedback.success {
+    background: #e5f7ef;
+    color: #237c5b;
+    border: 1px solid #bcebd5;
+}
+
+.feedback.error {
+    background: #fff0f1;
+    color: #b94e61;
+    border: 1px solid #f5cbd1;
+}
+
+.feedback.info {
+    background: #fff8df;
+    color: #85651e;
+    border: 1px solid #f2e1a7;
+}
+
+.next-btn {
+    display: none;
+    margin: 17px auto 0;
+}
+
+/* RESULT */
+
+.result-panel {
+    text-align: center;
+    padding: 45px 25px;
+}
+
+.result-icon {
+    font-size: 65px;
+    margin-bottom: 15px;
+}
+
+.result-score {
+    font-size: 55px;
+    color: var(--purple);
+    font-weight: 900;
+    margin: 15px 0;
+}
+
+.result-details {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 25px 0;
+}
+
+.result-item {
+    background: #f7f4ff;
+    padding: 15px 22px;
+    border-radius: 14px;
+    min-width: 110px;
+}
+
+.result-item strong {
+    display: block;
+    color: var(--dark-purple);
+    font-size: 23px;
+}
+
+.result-item span {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 800;
+}
+
+footer {
+    text-align: center;
+    color: #aaa4b9;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 25px;
+}
+
+@media(max-width: 600px) {
+    body {
+        padding: 16px 10px;
+    }
+
+    header {
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .tagline {
+        font-size: 10px;
+        text-align: right;
+    }
+
+    .panel {
+        padding: 19px 14px;
+        border-radius: 18px;
+    }
+
+    .options {
+        grid-template-columns: 1fr;
+    }
+
+    .machine-flow {
+        grid-template-columns: 0.8fr 1.3fr 0.8fr;
+        gap: 5px;
+    }
+
+    .node-box {
+        min-height: 65px;
+        font-size: 20px;
+    }
+
+    .machine-body {
+        min-height: 85px;
+    }
+
+    .machine-body .gear {
+        font-size: 25px;
+    }
+
+    .arrow {
+        font-size: 16px;
+    }
+
+    .level-title {
+        font-size: 21px;
+    }
+
+    .stats {
+        gap: 6px;
+    }
+
+    .stat {
+        font-size: 11px;
+        padding: 7px 9px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <div>
+        <div class="logo">FUNCTION <span>MACHINE</span></div>
+        <div class="tagline">Discover the Rule. Master the Function.</div>
+    </div>
+    <div class="tagline">MATHEMATICS GAME</div>
+</header>
+
+<!-- START SCREEN -->
+<section id="startScreen" class="screen active">
+    <div class="panel start-panel">
+        <div class="machine-icon">⚙️</div>
+        <h1>Function Machine</h1>
+        <p class="subtitle">
+            Welcome to the Function Machine!
+            Temukan aturan fungsi yang tersembunyi,
+            uji rumus pilihanmu, dan selesaikan setiap tantangan.
+        </p>
+
+        <button class="primary-btn" onclick="startGame()">
+            START GAME →
+        </button>
+
+        <div class="feature-list">
+            <span class="feature">🎯 6 Levels</span>
+            <span class="feature">❤️ 3 Lives</span>
+            <span class="feature">⭐ Score System</span>
+            <span class="feature">💡 Helpful Hints</span>
+            <span class="feature">🔀 Random Questions</span>
+        </div>
+    </div>
+</section>
+
+<!-- GAME SCREEN -->
+<section id="gameScreen" class="screen">
+
+    <div class="game-top">
+        <div>
+            <div class="level-label" id="levelLabel">LEVEL 1 OF 6</div>
+            <div class="level-title" id="levelTitle">Basic Function</div>
+        </div>
+
+        <div class="stats">
+            <div class="stat">⭐ <span id="score">0</span></div>
+            <div class="stat">❤️ <span id="lives">3</span></div>
+        </div>
+    </div>
+
+    <div class="progress-track">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="panel">
+
+        <span class="topic" id="topic">Fungsi Sederhana</span>
+
+        <p class="description" id="description"></p>
+
+        <div class="example-box">
+            <div class="section-title">📊 INPUT & OUTPUT DATA</div>
+
+            <table class="example-table">
+                <thead>
+                    <tr>
+                        <th>Input (x)</th>
+                        <th>Output (f(x))</th>
+                    </tr>
+                </thead>
+                <tbody id="exampleRows"></tbody>
+            </table>
+        </div>
+
+        <div class="section-title">
+            🧩 PILIH RUMUS FUNGSI YANG BENAR
+        </div>
+
+        <div class="options" id="options"></div>
+
+        <div class="machine-area">
+
+            <div class="machine-heading">
+                ⚙️ TEST YOUR FUNCTION MACHINE
+            </div>
+
+            <div class="machine-flow">
+
+                <div class="machine-node">
+                    <div class="node-label">INPUT</div>
+                    <div class="node-box" id="inputDisplay">?</div>
+                </div>
+
+                <div class="middle">
+                    <div class="machine-body" id="machineBody">
+                        <div class="gear">⚙️</div>
+                        <strong>FUNCTION</strong>
+                        <small>PROCESSING MACHINE</small>
+                    </div>
+                </div>
+
+                <div class="machine-node">
+                    <div class="node-label">OUTPUT</div>
+                    <div class="node-box" id="outputDisplay">?</div>
+                </div>
+
+            </div>
+
+            <div class="input-area">
+                <label for="numberInput">Masukkan nilai x:</label>
+                <input type="number" id="numberInput" value="2" step="any">
+                <button class="run-btn" onclick="runMachine()">
+                    ▶ RUN MACHINE
+                </button>
+            </div>
+
+        </div>
+
+        <div class="action-row">
+            <button class="hint-btn" onclick="showHint()">
+                💡 HINT
+            </button>
+
+            <button class="check-btn" id="checkBtn" onclick="checkAnswer()" disabled>
+                CHECK ANSWER ✓
+            </button>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+
+        <button class="primary-btn next-btn" id="nextBtn" onclick="nextLevel()">
+            NEXT LEVEL →
+        </button>
+
+    </div>
+</section>
+
+<!-- RESULT SCREEN -->
+<section id="resultScreen" class="screen">
+    <div class="panel result-panel">
+        <div class="result-icon" id="resultIcon">🏆</div>
+        <h1 id="resultTitle">Amazing Work!</h1>
+        <p class="subtitle" id="resultMessage">
+            Kamu berhasil menyelesaikan Function Machine!
+        </p>
+
+        <div class="result-score">
+            <span id="finalScore">0</span>
+        </div>
+        <div style="color:var(--muted);font-weight:800;font-size:12px;">
+            TOTAL SCORE
+        </div>
+
+        <div class="result-details">
+            <div class="result-item">
+                <strong id="completedLevels">0/6</strong>
+                <span>Level Selesai</span>
+            </div>
+
+            <div class="result-item">
+                <strong id="remainingLives">0</strong>
+                <span>Sisa Nyawa</span>
+            </div>
+
+            <div class="result-item">
+                <strong id="hintsUsed">0</strong>
+                <span>Hints Used</span>
+            </div>
+        </div>
+
+        <button class="primary-btn" onclick="restartGame()">
+            PLAY AGAIN ↻
+        </button>
+    </div>
+</section>
+
+<footer>
+    FUNCTION MACHINE • LEARN MATHEMATICS THROUGH PLAY
+</footer>
+
+</div>
+
+<script>
+
+// ========================================
+// RANDOM QUESTION GENERATOR
+// ========================================
+
+function shuffle(array) {
+    const result = [...array];
+
+    for (let i = result.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+    }
+
+    return result;
+}
+
+function makeChoices(correctLabel, correctRun, wrongChoices) {
+
+    const options = shuffle([
+        { label: correctLabel, run: correctRun, correct: true },
+        ...wrongChoices.map(item => ({
+            label: item.label,
+            run: item.run,
+            correct: false
+        }))
+    ]);
+
+    return {
+        choices: options.map(({ label, run }) => ({ label, run })),
+        answer: options.findIndex(item => item.correct)
+    };
+}
+
+function generateLevels() {
+
+    const rand = (min, max) =>
+        Math.floor(Math.random() * (max - min + 1)) + min;
+
+    const examples = fn =>
+        [1, 2, 3, 4].map(x => [x, fn(x)]);
+
+    // LEVEL 1: FUNGSI SEDERHANA
+    const a1 = rand(2, 5);
+    const b1 = rand(1, 6);
+
+    const level1 = makeChoices(
+        `f(x) = ${a1}x + ${b1}`,
+        x => a1 * x + b1,
+        [
+            { label: `${a1 + 1}x + ${b1}`, run: x => (a1 + 1) * x + b1 },
+            { label: `${a1}x - ${b1}`, run: x => a1 * x - b1 },
+            { label: `${a1 + 2}x + ${b1}`, run: x => (a1 + 2) * x + b1 }
+        ]
+    );
+
+    // LEVEL 2: NILAI FUNGSI
+    const a2 = rand(2, 5);
+    const b2 = rand(1, 5);
+
+    const level2 = makeChoices(
+        `f(x) = ${a2}x + ${b2}`,
+        x => a2 * x + b2,
+        [
+            { label: `${a2}x - ${b2}`, run: x => a2 * x - b2 },
+            { label: `${a2 + 1}x + ${b2}`, run: x => (a2 + 1) * x + b2 },
+            { label: `${a2}x + ${b2 + 2}`, run: x => a2 * x + b2 + 2 }
+        ]
+    );
+
+    // LEVEL 3: DOMAIN DAN RANGE
+    const c3 = rand(1, 5);
+
+    const level3 = makeChoices(
+        `f(x) = x² + ${c3}`,
+        x => x * x + c3,
+        [
+            { label: `f(x) = x² - ${c3}`, run: x => x * x - c3 },
+            { label: `f(x) = 2x + ${c3}`, run: x => 2 * x + c3 },
+            { label: `f(x) = x² + ${c3 + 2}`, run: x => x * x + c3 + 2 }
+        ]
+    );
+
+    // LEVEL 4: KOMPOSISI FUNGSI
+    const a4 = rand(2, 4);
+    const b4 = rand(1, 4);
+    const c4 = rand(1, 4);
+    const hasil4 = a4 * c4 + b4;
+
+    const level4 = makeChoices(
+        `f(g(x)) = ${a4}x + ${hasil4}`,
+        x => a4 * x + hasil4,
+        [
+            { label: `${a4}x + ${b4}`, run: x => a4 * x + b4 },
+            { label: `${a4 + 1}x + ${hasil4}`, run: x => (a4 + 1) * x + hasil4 },
+            { label: `${a4}x + ${hasil4 + 2}`, run: x => a4 * x + hasil4 + 2 }
+        ]
+    );
+
+    // LEVEL 5: FUNGSI INVERS
+    const a5 = rand(2, 4);
+    const b5 = rand(1, 5);
+
+    const level5 = makeChoices(
+        `f⁻¹(x) = (x - ${b5}) / ${a5}`,
+        x => (x - b5) / a5,
+        [
+            { label: `(x + ${b5}) / ${a5}`, run: x => (x + b5) / a5 },
+            { label: `${a5}x + ${b5}`, run: x => a5 * x + b5 },
+            { label: `(x - ${b5 + 2}) / ${a5}`, run: x => (x - b5 - 2) / a5 }
+        ]
+    );
+
+    // LEVEL 6: FUNGSI KUADRAT
+    const c6 = rand(1, 6);
+
+    const level6 = makeChoices(
+        `f(x) = x² + ${c6}`,
+        x => x * x + c6,
+        [
+            { label: `f(x) = x² - ${c6}`, run: x => x * x - c6 },
+            { label: `f(x) = ${c6}x + 1`, run: x => c6 * x + 1 },
+            { label: `f(x) = x² + ${c6 + 2}`, run: x => x * x + c6 + 2 }
+        ]
+    );
+
+    return [
+
+        {
+            title: "Level 1: Basic Function",
+            topic: "Fungsi Sederhana",
+            description: "Amati pola input dan output. Pilih rumus fungsi yang sesuai.",
+            examples: examples(x => a1 * x + b1),
+            ...level1,
+            hint: "Perhatikan perubahan output ketika input bertambah satu.",
+            explanation: `Rumus yang benar adalah f(x) = ${a1}x + ${b1}. Kalikan input dengan ${a1}, kemudian tambahkan ${b1}.`
+        },
+
+        {
+            title: "Level 2: Function Value",
+            topic: "Nilai Fungsi",
+            description: "Temukan aturan fungsi berdasarkan data, kemudian uji nilai fungsi.",
+            examples: examples(x => a2 * x + b2),
+            ...level2,
+            hint: "Perhatikan pola pertambahan output dan hubungan input dengan output.",
+            explanation: `Rumus fungsi yang benar adalah f(x) = ${a2}x + ${b2}. Masukkan nilai x ke dalam rumus tersebut untuk mendapatkan hasilnya.`
+        },
+
+        {
+            title: "Level 3: Domain and Range",
+            topic: "Domain dan Range",
+            description: "Temukan aturan fungsi dari pasangan nilai input dan output.",
+            examples: examples(x => x * x + c3),
+            ...level3,
+            hint: "Perhatikan pola kuadrat dari setiap nilai input.",
+            explanation: `Rumusnya adalah f(x) = x² + ${c3}. Domain pada tabel adalah {1, 2, 3, 4}, sedangkan range adalah himpunan nilai output pada tabel.`
+        },
+
+        {
+            title: "Level 4: Function Composition",
+            topic: "Komposisi Fungsi",
+            description: `Diketahui f(x) = ${a4}x + ${b4} dan g(x) = x + ${c4}. Tentukan (f ∘ g)(x).`,
+            examples: examples(x => a4 * x + hasil4),
+            ...level4,
+            hint: "Komposisi f(g(x)) berarti masukkan g(x) ke dalam f(x).",
+            explanation: `f(g(x)) = ${a4}(x + ${c4}) + ${b4} = ${a4}x + ${hasil4}.`
+        },
+
+        {
+            title: "Level 5: Inverse Function",
+            topic: "Fungsi Invers",
+            description: `Diketahui f(x) = ${a5}x + ${b5}. Tentukan rumus fungsi inversnya.`,
+            examples: [1, 2, 3, 4].map(x => [a5 * x + b5, x]),
+            ...level5,
+            hint: "Tukar posisi x dan y, kemudian selesaikan persamaan untuk y.",
+            explanation: `Fungsi inversnya adalah f⁻¹(x) = (x - ${b5}) / ${a5}.`
+        },
+
+        {
+            title: "Level 6: Quadratic Function",
+            topic: "Fungsi Kuadrat",
+            description: "Amati pola output dan tentukan rumus fungsi kuadrat yang sesuai.",
+            examples: examples(x => x * x + c6),
+            ...level6,
+            hint: "Kuadratkan input, kemudian perhatikan bilangan yang ditambahkan.",
+            explanation: `Rumus fungsi yang benar adalah f(x) = x² + ${c6}.`
+        }
+
+    ];
+}
+
+// ========================================
+// GAME VARIABLES
+// ========================================
+
+let levels = [];
+let currentLevel = 0;
+let score = 0;
+let lives = 3;
+let selectedChoice = null;
+let machineOutput = null;
+let machineHasRun = false;
+let levelCompleted = false;
+let hintsUsed = 0;
+
+// ========================================
+// SCREEN MANAGEMENT
+// ========================================
+
+function showScreen(screenId) {
+
+    document.querySelectorAll(".screen").forEach(screen => {
+        screen.classList.remove("active");
+    });
+
+    document.getElementById(screenId).classList.add("active");
+}
+
+// ========================================
+// START GAME
+// ========================================
+
+function startGame() {
+
+    levels = generateLevels();
+
+    currentLevel = 0;
+    score = 0;
+    lives = 3;
+    hintsUsed = 0;
+
+    showScreen("gameScreen");
+    loadLevel();
+}
+
+// ========================================
+// LOAD LEVEL
+// ========================================
+
+function loadLevel() {
+
+    selectedChoice = null;
+    machineOutput = null;
+    machineHasRun = false;
+    levelCompleted = false;
+
+    const level = levels[currentLevel];
+
+    document.getElementById("levelLabel").textContent =
+        `LEVEL ${currentLevel + 1} OF ${levels.length}`;
+
+    document.getElementById("levelTitle").textContent =
+        level.title;
+
+    document.getElementById("topic").textContent =
+        level.topic;
+
+    document.getElementById("description").textContent =
+        level.description;
+
+    document.getElementById("score").textContent = score;
+    document.getElementById("lives").textContent = lives;
+
+    document.getElementById("progressBar").style.width =
+        `${(currentLevel / levels.length) * 100}%`;
+
+    // Tampilkan data input dan output
+
+    const rows = document.getElementById("exampleRows");
+
+    rows.innerHTML = "";
+
+    level.examples.forEach(pair => {
+
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${pair[0]}</td>
+            <td>${pair[1]}</td>
+        `;
+
+        rows.appendChild(tr);
+    });
+
+    // Tampilkan pilihan jawaban
+
+    const optionsBox = document.getElementById("options");
+
+    optionsBox.innerHTML = "";
+
+    level.choices.forEach((choice, index) => {
+
+        const button = document.createElement("button");
+
+        button.className = "option";
+
+        button.innerHTML = `
+            <span class="option-letter">${String.fromCharCode(65 + index)}</span>
+            ${choice.label}
+        `;
+
+        button.onclick = () => selectAnswer(index);
+
+        optionsBox.appendChild(button);
+    });
+
+    // Reset mesin
+
+    document.getElementById("inputDisplay").textContent = "?";
+    document.getElementById("outputDisplay").textContent = "?";
+    document.getElementById("machineBody").classList.remove("running");
+
+    document.getElementById("numberInput").value = 2;
+
+    document.getElementById("checkBtn").disabled = true;
+
+    document.getElementById("nextBtn").style.display = "none";
+
+    const feedback = document.getElementById("feedback");
+
+    feedback.className = "feedback";
+    feedback.innerHTML = "";
+
+    document.getElementById("options").style.pointerEvents = "auto";
+}
+
+// ========================================
+// SELECT ANSWER
+// ========================================
+
+function selectAnswer(index) {
+
+    if (levelCompleted) return;
+
+    selectedChoice = index;
+    machineHasRun = false;
+    machineOutput = null;
+
+    const buttons = document.querySelectorAll(".option");
+
+    buttons.forEach((button, i) => {
+
+        button.classList.toggle("selected", i === index);
+
+    });
+
+    document.getElementById("inputDisplay").textContent = "?";
+    document.getElementById("outputDisplay").textContent = "?";
+
+    document.getElementById("checkBtn").disabled = true;
+
+    const feedback = document.getElementById("feedback");
+
+    feedback.className = "feedback";
+    feedback.innerHTML = "";
+}
+
+// ========================================
+// RUN FUNCTION MACHINE
+// ========================================
+
+function runMachine() {
+
+    if (selectedChoice === null) {
+
+        showFeedback(
+            "Pilih rumus fungsi terlebih dahulu sebelum menjalankan mesin.",
+            "info"
+        );
+
+        return;
+    }
+
+    const inputValue = document.getElementById("numberInput").value;
+
+    if (inputValue.trim() === "") {
+
+        showFeedback("Masukkan nilai x terlebih dahulu.", "info");
+
+        return;
+    }
+
+    const x = Number(inputValue);
+
+    if (!Number.isFinite(x)) {
+
+        showFeedback("Masukkan angka yang valid.", "info");
+
+        return;
+    }
+
+    const level = levels[currentLevel];
+
+    const selectedFunction = level.choices[selectedChoice].run;
+
+    machineOutput = selectedFunction(x);
+
+    if (!Number.isFinite(machineOutput)) {
+
+        showFeedback("Hasil perhitungan tidak valid.", "error");
+
+        return;
+    }
+
+    machineHasRun = true;
+
+    document.getElementById("inputDisplay").textContent = x;
+
+    const machine = document.getElementById("machineBody");
+
+    machine.classList.add("running");
+
+    document.getElementById("outputDisplay").textContent = "...";
+
+    document.getElementById("checkBtn").disabled = true;
+
+    setTimeout(() => {
+
+        machine.classList.remove("running");
+
+        document.getElementById("outputDisplay").textContent =
+            Number(machineOutput.toFixed(4));
+
+        document.getElementById("checkBtn").disabled = false;
+
+        showFeedback(
+            `Mesin berhasil dijalankan! Input x = ${x} menghasilkan output ${Number(machineOutput.toFixed(4))}. Sekarang periksa jawabanmu.`,
+            "info"
+        );
+
+    }, 700);
+}
+
+// ========================================
+// CHECK ANSWER
+// ========================================
+
+function checkAnswer() {
+
+    if (selectedChoice === null || !machineHasRun || levelCompleted) {
+        return;
+    }
+
+    const level = levels[currentLevel];
+
+    const correct = selectedChoice === level.answer;
+
+    if (correct) {
+
+        levelCompleted = true;
+
+        score += 100;
+
+        document.getElementById("score").textContent = score;
+
+        document.getElementById("progressBar").style.width =
+            `${((currentLevel + 1) / levels.length) * 100}%`;
+
+        showFeedback(
+            `🎉 Excellent! Jawaban kamu benar!<br><br>
+            ${level.explanation}<br><br>
+            <strong>+100 POINTS!</strong>`,
+            "success"
+        );
+
+        document.getElementById("nextBtn").style.display = "block";
+
+        document.getElementById("checkBtn").disabled = true;
+
+        document.getElementById("options").style.pointerEvents = "none";
+
+    } else {
+
+        lives--;
+
+        document.getElementById("lives").textContent = lives;
+
+        showFeedback(
+            `Belum tepat! Jangan menyerah.<br><br>
+            Hasil mesin yang kamu jalankan adalah ${Number(machineOutput.toFixed(4))}. Periksa kembali pola input dan output, lalu coba lagi.`,
+            "error"
+        );
+
+        if (lives <= 0) {
+
+            setTimeout(() => finishGame(false), 1200);
+
+        } else {
+
+            selectedChoice = null;
+            machineHasRun = false;
+            machineOutput = null;
+
+            document.querySelectorAll(".option").forEach(button => {
+                button.classList.remove("selected");
+            });
+
+            document.getElementById("inputDisplay").textContent = "?";
+            document.getElementById("outputDisplay").textContent = "?";
+
+            document.getElementById("checkBtn").disabled = true;
+        }
+    }
+}
+
+// ========================================
+// HINT
+// ========================================
+
+function showHint() {
+
+    if (levelCompleted) return;
+
+    const level = levels[currentLevel];
+
+    hintsUsed++;
+
+    showFeedback(
+        `💡 HINT: ${level.hint}`,
+        "info"
+    );
+}
+
+// ========================================
+// FEEDBACK
+// ========================================
+
+function showFeedback(message, type) {
+
+    const feedback = document.getElementById("feedback");
+
+    feedback.innerHTML = message;
+
+    feedback.className = `feedback show ${type}`;
+}
+
+// ========================================
+// NEXT LEVEL
+// ========================================
+
+function nextLevel() {
+
+    currentLevel++;
+
+    if (currentLevel >= levels.length) {
+
+        finishGame(true);
+
+    } else {
+
+        loadLevel();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+}
+
+// ========================================
+// FINISH GAME
+// ========================================
+
+function finishGame(completed) {
+
+    showScreen("resultScreen");
+
+    document.getElementById("finalScore").textContent = score;
+
+    document.getElementById("completedLevels").textContent =
+        `${completed ? levels.length : currentLevel}/${levels.length}`;
+
+    document.getElementById("remainingLives").textContent = lives;
+
+    document.getElementById("hintsUsed").textContent = hintsUsed;
+
+    if (completed) {
+
+        document.getElementById("resultIcon").textContent = "🏆";
+
+        document.getElementById("resultTitle").textContent =
+            "Amazing Work!";
+
+        document.getElementById("resultMessage").textContent =
+            "Selamat! Kamu berhasil menyelesaikan seluruh level Function Machine.";
+
+    } else {
+
+        document.getElementById("resultIcon").textContent = "💜";
+
+        document.getElementById("resultTitle").textContent =
+            "Game Over!";
+
+        document.getElementById("resultMessage").textContent =
+            "Nyawamu sudah habis. Tetap semangat dan coba lagi!";
+    }
+}
+
+// ========================================
+// RESTART GAME
+// ========================================
+
+function restartGame() {
+
+    // Membuat soal baru setiap permainan diulang
+    levels = generateLevels();
+
+    currentLevel = 0;
+    score = 0;
+    lives = 3;
+    hintsUsed = 0;
+
+    showScreen("gameScreen");
+
+    loadLevel();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+</script>
+
+</body>
+</html>
